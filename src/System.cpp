@@ -9,7 +9,7 @@
 #include <stdlib.h>
 
 #include "SDL2/SDL.h"
-#include "Dialogs/include/nfd.h"
+#include "nfd.h"
 #include "System.h"
 
 char g_SavePath[CONFIG_STR_LEN];
