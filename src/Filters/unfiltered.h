@@ -4,7 +4,7 @@
 class Unfiltered : public VideoFilter
 {
 public:
-	virtual void BlitFrame( unsigned int *source, unsigned short *pixels, int PPU_Pitch );
+	virtual void BlitFrame( uint32_t *source, uint16_t *pixels, int PPU_Pitch );
 };
 
 #endif

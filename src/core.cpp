@@ -22,7 +22,7 @@ void ShowFPS()
 
 	ff++;
 
-	if((thisframe-lastframe) > 1000) 
+	if((thisframe-lastframe) > 1000)
 	{
 		printf("FPS: %d\n",ff);
 		ff=0;
@@ -70,23 +70,23 @@ void loadFamicom()
     if (!szFile) {
         return ;
     }
-    
+
     Famicom *loaded;
 	loaded = LoadINes( szFile );
-	
+
 	if( loaded )
 	{
 		// Reset the NES (grrrr)
 		loaded->Restart();
-		
+
 		if( machine != NULL )
 		{
 			SDL_CloseAudio();
 			delete machine;
 		}
-		
-		ConfigureAudio(config.SampleRate, loaded);
-		
+
+		//ConfigureAudio(config.SampleRate, loaded);
+
 		if( ControlPort1 )
 			loaded->InsertController( false, ControlPort1 );
 		if( ControlPort2 )
@@ -102,7 +102,7 @@ int main( int argc, char** argv )
     SDL_Texture *sdlTexture;
 
 	LoadConfiguration( argv[0], config );
-	
+
 	/* initialize SDL */
 	if ( SDL_Init( SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER | SDL_INIT_JOYSTICK ) < 0 )
 	{
@@ -119,7 +119,7 @@ int main( int argc, char** argv )
 		return -1;
 	}
 
-	int videoModes = SDL_SWSURFACE;
+	int videoModes = 0;
 
     SDL_CreateWindowAndRenderer(640, 480, videoModes, &sdlWindow, &sdlRenderer);
 
@@ -129,29 +129,27 @@ int main( int argc, char** argv )
                                    640, 480);
 
     SDL_SetRenderDrawColor(sdlRenderer, 0, 0, 0, 255);
-    SDL_RenderClear(sdlRenderer);
-    SDL_RenderPresent(sdlRenderer);
-    
+
     for( int i = 0; i < SDL_NumJoysticks(); i++ )
 		SDL_JoystickOpen(i);
 
 	LoadDatabase(GetDatabaseName());
 
-	VideoFilter *filter = new NTSCFilter();
+	VideoFilter *filter = new Unfiltered();
 	ControlPort1 = new Gamepad( &config.Gamepad1 );
 	ControlPort2 = new Gamepad( &config.Gamepad2 );
 
 	// --- CORE EMULATION / PROGRAM LOOP ---
-		
+
 	bool running = true;
 
 	do
 	{
 		SDL_Event event;
 
-		while(SDL_PollEvent(&event)) 
+		while(SDL_PollEvent(&event))
 		{
-			switch(event.type) 
+			switch(event.type)
 			{
 				case SDL_QUIT:
 					running = false;
@@ -170,7 +168,7 @@ int main( int argc, char** argv )
 							break ;
 						case SDLK_q:
 							running = false;
-							break ;					
+							break ;
 						case SDLK_o:
 							SDL_PauseAudio(true);
                             loadFamicom();
@@ -200,9 +198,9 @@ int main( int argc, char** argv )
 					break ;
 				case SDL_JOYAXISMOTION:
 					{
-						int buttonID = 0x81000000 | 
-							(event.jhat.which) | 
-							(event.jhat.hat << 8) | 
+						int buttonID = 0x81000000 |
+							(event.jhat.which) |
+							(event.jhat.hat << 8) |
 							((event.jhat.value > 0) ? 0x01 : 0x02);
 						bool pressed = (abs(event.jaxis.value) > 0xFF);
 
@@ -215,9 +213,9 @@ int main( int argc, char** argv )
 
 				case SDL_JOYHATMOTION:
 					{
-						int buttonID = 0x82000000 | 
-							(event.jhat.which) | 
-							(event.jhat.hat << 8) | 
+						int buttonID = 0x82000000 |
+							(event.jhat.which) |
+							(event.jhat.hat << 8) |
 							((event.jhat.value > 0) ? 0x01 : 0x02);
 
                         bool pressed = !(event.jhat.value & SDL_HAT_CENTERED);
@@ -228,12 +226,12 @@ int main( int argc, char** argv )
 							ControlPort2->HandleEvent( pressed, buttonID );
 					}
 					break ;
-	
+
 				case SDL_JOYBUTTONDOWN:
 				case SDL_JOYBUTTONUP:
 					{
 						int buttonID = 0x83000000 |
-							(event.jbutton.which) | 
+							(event.jbutton.which) |
 							(event.jbutton.button << 8);
 						bool pressed = (event.jbutton.state == SDL_PRESSED);
 
@@ -262,28 +260,27 @@ int main( int argc, char** argv )
 				*/
 			}
 		}
-	
+
 		// Main emulation loop
 		if( machine != NULL )
 		{
 			unsigned short *frame = NULL;
-			
+
 			while( SDL_GetAudioStatus() == SDL_AUDIO_PLAYING &&
-				  machine->AudioFull() ) 
+				  machine->AudioFull() )
 				SDL_Delay(5);
 			while( frame == NULL )
 				frame = machine->Execute();
 
-
-            unsigned int pixels[640*480];
-			filter->BlitFrame( pixels, frame, PPU_PITCH );
-            SDL_UpdateTexture(sdlTexture, NULL, pixels, 640 * (int)sizeof(unsigned int));
+            uint32_t pixels[480][640];
+			filter->BlitFrame( &pixels[0][0], frame, PPU_PITCH );
+            SDL_UpdateTexture(sdlTexture, NULL, pixels, (int)sizeof(pixels[0]));
 		}
 		else
 		{
 			SDL_Delay(100);
 		}
-	
+
         SDL_RenderClear(sdlRenderer);
         SDL_RenderCopy(sdlRenderer, sdlTexture, NULL, NULL);
         SDL_RenderPresent(sdlRenderer);
@@ -291,16 +288,16 @@ int main( int argc, char** argv )
 	}
 	while( running );
 
-	SDL_Quit( );
+	SDL_Quit();
 	SaveConfiguration( argv[0], config );
 
 	CloseDatabase();
 
 	if( machine != NULL )
 		delete machine;
-	
+
 	delete filter;
-	
+
 	if( ControlPort1 != NULL )
 		delete ControlPort1;
 	if( ControlPort2 != NULL )

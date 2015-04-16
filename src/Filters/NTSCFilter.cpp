@@ -15,7 +15,7 @@ NTSCFilter::~NTSCFilter()
 	delete ntsc;
 }
 
-void NTSCFilter::BlitFrame( unsigned int *out_line, unsigned short *pixels, int PPU_Pitch )
+void NTSCFilter::BlitFrame( uint32_t *out_line, uint16_t *pixels, int PPU_Pitch )
 {
 	out_line += (SCREEN_WIDTH - NES_NTSC_OUT_WIDTH(PPU_Pitch)) / 2;
 
