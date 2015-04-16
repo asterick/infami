@@ -18,7 +18,6 @@
 		841980391077237000C3FDD1 /* ROM.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84197FCF1077237000C3FDD1 /* ROM.cpp */; };
 		8419803A1077237000C3FDD1 /* SquareAPU.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84197FD11077237000C3FDD1 /* SquareAPU.cpp */; };
 		8419803B1077237000C3FDD1 /* TriangleAPU.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84197FD31077237000C3FDD1 /* TriangleAPU.cpp */; };
-		8419803C1077237000C3FDD1 /* Hq2XFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84197FD61077237000C3FDD1 /* Hq2XFilter.cpp */; };
 		8419803D1077237000C3FDD1 /* nes_ntsc.c in Sources */ = {isa = PBXBuildFile; fileRef = 84197FD81077237000C3FDD1 /* nes_ntsc.c */; };
 		8419803E1077237000C3FDD1 /* NTSCFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84197FDC1077237000C3FDD1 /* NTSCFilter.cpp */; };
 		8419803F1077237000C3FDD1 /* unfiltered.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84197FDE1077237000C3FDD1 /* unfiltered.cpp */; };
@@ -95,8 +94,6 @@
 		84197FD21077237000C3FDD1 /* SquareAPU.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SquareAPU.h; path = src/Emulation/SquareAPU.h; sourceTree = SOURCE_ROOT; };
 		84197FD31077237000C3FDD1 /* TriangleAPU.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TriangleAPU.cpp; path = src/Emulation/TriangleAPU.cpp; sourceTree = SOURCE_ROOT; };
 		84197FD41077237000C3FDD1 /* TriangleAPU.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TriangleAPU.h; path = src/Emulation/TriangleAPU.h; sourceTree = SOURCE_ROOT; };
-		84197FD61077237000C3FDD1 /* Hq2XFilter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Hq2XFilter.cpp; path = src/Filters/Hq2XFilter.cpp; sourceTree = SOURCE_ROOT; };
-		84197FD71077237000C3FDD1 /* Hq2XFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Hq2XFilter.h; path = src/Filters/Hq2XFilter.h; sourceTree = SOURCE_ROOT; };
 		84197FD81077237000C3FDD1 /* nes_ntsc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = nes_ntsc.c; path = src/Filters/nes_ntsc.c; sourceTree = SOURCE_ROOT; };
 		84197FD91077237000C3FDD1 /* nes_ntsc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = nes_ntsc.h; path = src/Filters/nes_ntsc.h; sourceTree = SOURCE_ROOT; };
 		84197FDA1077237000C3FDD1 /* nes_ntsc_config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = nes_ntsc_config.h; path = src/Filters/nes_ntsc_config.h; sourceTree = SOURCE_ROOT; };
@@ -332,8 +329,6 @@
 		84197FD51077237000C3FDD1 /* Filters */ = {
 			isa = PBXGroup;
 			children = (
-				84197FD61077237000C3FDD1 /* Hq2XFilter.cpp */,
-				84197FD71077237000C3FDD1 /* Hq2XFilter.h */,
 				84197FD81077237000C3FDD1 /* nes_ntsc.c */,
 				84197FD91077237000C3FDD1 /* nes_ntsc.h */,
 				84197FDA1077237000C3FDD1 /* nes_ntsc_config.h */,
@@ -527,7 +522,6 @@
 				841980391077237000C3FDD1 /* ROM.cpp in Sources */,
 				8419803A1077237000C3FDD1 /* SquareAPU.cpp in Sources */,
 				8419803B1077237000C3FDD1 /* TriangleAPU.cpp in Sources */,
-				8419803C1077237000C3FDD1 /* Hq2XFilter.cpp in Sources */,
 				8419803D1077237000C3FDD1 /* nes_ntsc.c in Sources */,
 				8419803E1077237000C3FDD1 /* NTSCFilter.cpp in Sources */,
 				8419803F1077237000C3FDD1 /* unfiltered.cpp in Sources */,

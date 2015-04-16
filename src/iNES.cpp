@@ -1,4 +1,4 @@
-#include "SDL.h"
+#include "SDL2/SDL.h"
 
 #include "Emulation/Emulation.h"
 #include "Mappers/Mappers.h"
@@ -124,7 +124,7 @@ Famicom* LoadINes( const char *path )
 
 		// Ignore trainers
 		if( header.Flags6 & 0x04 )
-			romData += 512;	
+			romData += 512;
 
 		if( LoadMapper[ mapper ] == NULL )
 		{
@@ -136,7 +136,7 @@ Famicom* LoadINes( const char *path )
 
 		rom->PRGRom		= romData;
 		rom->PRGSize	= header.PRG_Pages * 0x4000;
-		
+
 		if( header.CHR_Pages == 0 )
 		{
 			rom->CHRRom = rom->CHRRam;
@@ -146,15 +146,15 @@ Famicom* LoadINes( const char *path )
 		{
 			rom->CHRRom = rom->PRGRom + header.PRG_Pages * 0x4000;
 			rom->CHRSize = header.CHR_Pages * 0x2000;
-		}		
+		}
 
 		rom->WRKSize = header.PRG_Ram * 0x2000;
 		rom->BCKSize = header.PRG_Ram * 0x2000;
 		rom->RAMSize = rom->BCKSize + rom->WRKSize;
-		
+
 		rom->BCKRam = new unsigned char[rom->RAMSize];
 		rom->WRKRam = rom->BCKRam + rom->BCKSize;
-		
+
 		rom->BatteryBackup = ( header.Flags6 & 0x02 ) ? true : false;
 
 		switch( header.Flags6 & 9 )
@@ -187,7 +187,7 @@ Famicom* LoadINes( const char *path )
 
 		// Ignore trainers
 		if( romDesc->flags & 0x0100 )
-			romData += 512;	
+			romData += 512;
 
 		rom = LoadMapper[ romDesc->mapper ]( (romDesc->flags & 0x0002) ? &NTSCTiming : &PALTiming );
 		rom->Trainer = romData;
@@ -214,7 +214,7 @@ Famicom* LoadINes( const char *path )
 				rom->WRKSize	= 64 << ((romDesc->wrkSize & 0xF0)>>4);
 
 			rom->RAMSize = rom->WRKSize + rom->BCKSize;
-					
+
 			rom->BCKRam = new unsigned char[rom->RAMSize];
 			rom->WRKRam = rom->BCKRam + rom->BCKSize;
 		}
@@ -247,21 +247,21 @@ Famicom* LoadINes( const char *path )
 		case 0x00:
 			Mirroring	= Horizontal;
 			break ;
-		case 0x10: 
+		case 0x10:
 			Mirroring  = Vertical;
-			break ;		
-		case 0x20: 
+			break ;
+		case 0x20:
 			Mirroring	= FourScreen;
 			break ;
-		case 0x30: 
+		case 0x30:
 			Mirroring	= ZeroPage;
 			break ;
-		case 0x40: 
+		case 0x40:
 			Mirroring	= OnePage;
 			break ;
 		default:
 			Mirroring	= MapperControlled;
-			break ;		
+			break ;
 		}
 
 		// ----------------------------------------------------------------------

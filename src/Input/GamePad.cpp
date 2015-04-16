@@ -1,8 +1,6 @@
 #include "../Emulation/Controller.h"
 #include "Gamepad.h"
 
-#include "SDL.h"
-
 Gamepad::Gamepad( GamepadConfig *config )
 {
 	Config = config;
@@ -27,7 +25,7 @@ void Gamepad::Strobe( unsigned char Byte )
 }
 
 void Gamepad::HandleEvent( bool Pressed, unsigned int Code )
-{	
+{
 	if( Code == Config->AKeyCode )
 		keys[0] = Pressed;
 	else if( Code == Config->BKeyCode )

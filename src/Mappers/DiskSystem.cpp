@@ -1,6 +1,6 @@
 #include <memory.h>
 
-#include "SDL.h"
+#include "SDL2/SDL.h"
 
 #include "../Emulation/Emulation.h"
 #include "../System.h"
@@ -12,7 +12,7 @@ DiskSystem::~DiskSystem()
 }
 
 void DiskSystem::Initalize( int Mirroring )
-{	
+{
 	ROM::Initalize( Mirroring );
 
 	m_DiskLoaded = false;
@@ -87,13 +87,13 @@ void DiskSystem::InsertDisk()
 	SDL_RWseek(fo, 0, SEEK_END);
 	int size = SDL_RWtell(fo);
 
-	
+
 	SDL_RWseek(fo, size % FDS_DISK_SIZE, SEEK_SET);	// Skip FDS headers
 	size -= size % FDS_DISK_SIZE;
 
 	m_BaseAddress = 0;
 	m_CurrentSide = 0;
-	m_TotalSides = size / FDS_DISK_SIZE;		
+	m_TotalSides = size / FDS_DISK_SIZE;
 	m_DiskImage = new unsigned char[size];
 	m_Modified = new bool[size];
 
@@ -188,7 +188,7 @@ void DiskSystem::EjectDisk()
 				break ;
 			}
 		}
-		
+
 		if( changed )
 		{
 			SDL_RWops *fo = SDL_RWFromFile(m_SaveName, "wb");
@@ -212,7 +212,7 @@ void DiskSystem::EjectDisk()
 					offset |= (t & 0x00FF0000) >> 8;
 					offset |= (t & 0x0000FF00) << 8;
 					offset |=  (t & 0x000000FF) << 24;
-	
+
 					t = size;
 					size |= (t & 0x0000FF00) << 8;
 					size =  (t & 0x000000FF) << 24;
@@ -287,7 +287,7 @@ unsigned char DiskSystem::FDSRead( unsigned short addr, unsigned char ch )
 
 		case 0x4030:		// Disk Status Register 0 (R)
 			{
-				unsigned char status = 
+				unsigned char status =
 					(m_TimerIRQActive	? 0x01 : 0) |
 					(m_DiskIRQActive	? 0x02 : 0) |
 					(m_CRCError			? 0x10 : 0) |
@@ -302,7 +302,7 @@ unsigned char DiskSystem::FDSRead( unsigned short addr, unsigned char ch )
 		case 0x4031:		// Disk Data Read Register (R)
 			m_DiskIRQActive = false;
 			m_DataAvailable = false;
-			
+
 			m_DriveIRQCountDown = FDS_CYCLES_PER_BYTE;
 
 			if( !(m_DrivePointer & 0xFF) )
@@ -315,7 +315,7 @@ unsigned char DiskSystem::FDSRead( unsigned short addr, unsigned char ch )
 			return ch;
 
 		case 0x4032:		// Disk Status Register 1 (R)
-			return 
+			return
 				(m_DiskInserted		? 0 : 0x01 ) |
 				(m_DriveReady		? 0 : 0x02 ) |
 				((m_WriteProtected || m_DriveStopRequest || m_DriveStartRequest) ? 0x04 : 0 );
@@ -345,7 +345,7 @@ void DiskSystem::FDSWrite( unsigned short addr, unsigned char ch )
 		{
 			if( m_WaveTableWritable )
 				m_WaveTableRam[addr&0x3F] = ch & 0x3F;
-	
+
 			return ;
 		}
 	}
@@ -416,7 +416,7 @@ void DiskSystem::FDSWrite( unsigned short addr, unsigned char ch )
 				m_DriveStopRequest	= (ch & 0x01) == 0;
 				m_DriveStartRequest	= (ch & 0x02) == 0;
 
-				m_DataWrite		= (ch & 0x04) == 0;			
+				m_DataWrite		= (ch & 0x04) == 0;
 				m_EnableCRC		= (ch & 0x10) != 0;
 				// UNKNOWN BIT 0x20
 				m_GapResetCrc	= (ch & 0x40) != 0;
@@ -439,7 +439,7 @@ void DiskSystem::FDSWrite( unsigned short addr, unsigned char ch )
 
 				if( m_DataWrite )
 					m_DriveWriteDelay = 2;
-				
+
 				if( !m_DriveStartRequest )
 				{
 					//printf("FDS Rewind\n", m_CurrentSide, m_DrivePointer-2);
@@ -486,7 +486,7 @@ unsigned char DiskSystem::Read( unsigned short addr )
 		if( addr >= 0x4020 )
 			return m_BusTrash = FDSRead( addr, m_BusTrash );
 		return m_BusTrash = APURead( addr, m_BusTrash );
-		
+
 	case 0x6000:
 	case 0x8000:
 	case 0xA000:
@@ -534,7 +534,7 @@ void DiskSystem::VideoWrite( unsigned char Byte )
 	switch( m_VideoAddress & 0x3000 )
 	{
 	case 0x0000:	// CHR-ROM
-	case 0x1000:	// 
+	case 0x1000:	//
 		CHRRam[m_VideoAddress&0x1FFF] = Byte;
 		break ;
 	default:		// Name tables
@@ -543,15 +543,15 @@ void DiskSystem::VideoWrite( unsigned char Byte )
 	}
 }
 
-unsigned char DiskSystem::VideoRead() 
-{ 
+unsigned char DiskSystem::VideoRead()
+{
 	switch( m_VideoAddress & 0x3000 )
 	{
 	case 0x0000:	// CHR-ROM
-	case 0x1000:	// 
+	case 0x1000:	//
 		return CHRRam[m_VideoAddress&0x1FFF];
 	default:		// Name tables
 		return GetNameTable( m_VideoAddress );
 	}
-	return 0; 
+	return 0;
 }

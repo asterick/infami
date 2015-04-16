@@ -1,23 +1,19 @@
-#include "SDL.h"
-
 #include "VideoFilter.h"
 #include "unfiltered.h"
 
-void Unfiltered::BlitFrame( SDL_Surface *source, unsigned short *pixels, int PPU_Pitch )
+void Unfiltered::BlitFrame( unsigned int *source, unsigned short *pixels, int PPU_Pitch )
 {
-	SDL_LockSurface( source );
-
 	int	in_row_width				= PPU_Pitch;
-	int out_pitch					= source->pitch/2;
+	int out_pitch					= SCREEN_PITCH/2;
 
 	unsigned short const* in_line	= pixels;
-	unsigned int* out_line			= (unsigned int*)source->pixels;
+	unsigned int* out_line			= (unsigned int*)source;
 	unsigned int* out_line_o		= out_line + (out_pitch / 2);
 
-	out_line += (source->w - PPU_Pitch*2) / 2;
-	out_line_o += (source->w - PPU_Pitch*2) / 2;
+	out_line += (SCREEN_WIDTH - PPU_Pitch*2) / 2;
+	out_line_o += (SCREEN_WIDTH - PPU_Pitch*2) / 2;
 
-	for( int y = source->h / 2; y; y-- )
+	for( int y = SCREEN_HEIGHT / 2; y; y-- )
 	{
 		unsigned short const* in_pixel	= in_line;
 		unsigned int* out_pixel			= out_line;
@@ -40,6 +36,4 @@ void Unfiltered::BlitFrame( SDL_Surface *source, unsigned short *pixels, int PPU
 			*(out_pixel_o++) = clr;
 		}
 	}
-
-	SDL_UnlockSurface(source);
 }

@@ -7,7 +7,6 @@
 
 #include "Filters/VideoFilter.h"
 #include "Filters/NTSCFilter.h"
-#include "Filters/Hq2XFilter.h"
 #include "Filters/Unfiltered.h"
 
 Gamepad *ControlPort1 = NULL;
