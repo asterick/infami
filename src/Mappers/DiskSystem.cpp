@@ -68,9 +68,10 @@ void DiskSystem::SpecialKey( int Code )
 
 void DiskSystem::InsertDisk()
 {
-	char szName[512];
+	const char *szName;
 
-	if( !GetDiskFilename( szName, sizeof(szName) ) )
+    szName = GetDiskFilename();
+	if( !szName )
 		return ;
 
 	if( m_DiskLoaded )

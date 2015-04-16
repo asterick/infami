@@ -61,6 +61,8 @@
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
 		DD6617001AE04B08000A8D53 /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD6616FF1AE04B08000A8D53 /* SDL2.framework */; };
+		DD921CCC1AE058CA004318A8 /* nfd_cocoa.m in Sources */ = {isa = PBXBuildFile; fileRef = DD921CC61AE058CA004318A8 /* nfd_cocoa.m */; };
+		DD921CCD1AE058CA004318A8 /* nfd_common.c in Sources */ = {isa = PBXBuildFile; fileRef = DD921CC71AE058CA004318A8 /* nfd_common.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -184,6 +186,11 @@
 		DD6616FA1AE049F8000A8D53 /* Frameworks */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Frameworks; path = ../../../../Library/Frameworks; sourceTree = "<group>"; };
 		DD6616FB1AE049F8000A8D53 /* Graphics */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Graphics; path = ../../../../Library/Graphics; sourceTree = "<group>"; };
 		DD6616FF1AE04B08000A8D53 /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = ../../../../Library/Frameworks/SDL2.framework; sourceTree = "<group>"; };
+		DD921CC31AE058CA004318A8 /* common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = common.h; sourceTree = "<group>"; };
+		DD921CC51AE058CA004318A8 /* nfd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = nfd.h; sourceTree = "<group>"; };
+		DD921CC61AE058CA004318A8 /* nfd_cocoa.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = nfd_cocoa.m; sourceTree = "<group>"; };
+		DD921CC71AE058CA004318A8 /* nfd_common.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = nfd_common.c; sourceTree = "<group>"; };
+		DD921CC81AE058CA004318A8 /* nfd_common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = nfd_common.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -277,6 +284,7 @@
 		84197FBC1077237000C3FDD1 /* src */ = {
 			isa = PBXGroup;
 			children = (
+				DD921CC21AE058CA004318A8 /* Dialogs */,
 				84197FBD1077237000C3FDD1 /* core.cpp */,
 				84197FBE1077237000C3FDD1 /* Emulation */,
 				84197FD51077237000C3FDD1 /* Filters */,
@@ -426,6 +434,26 @@
 			path = src/Mappers;
 			sourceTree = SOURCE_ROOT;
 		};
+		DD921CC21AE058CA004318A8 /* Dialogs */ = {
+			isa = PBXGroup;
+			children = (
+				DD921CC31AE058CA004318A8 /* common.h */,
+				DD921CC41AE058CA004318A8 /* include */,
+				DD921CC61AE058CA004318A8 /* nfd_cocoa.m */,
+				DD921CC71AE058CA004318A8 /* nfd_common.c */,
+				DD921CC81AE058CA004318A8 /* nfd_common.h */,
+			);
+			path = Dialogs;
+			sourceTree = "<group>";
+		};
+		DD921CC41AE058CA004318A8 /* include */ = {
+			isa = PBXGroup;
+			children = (
+				DD921CC51AE058CA004318A8 /* nfd.h */,
+			);
+			path = include;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -526,6 +554,7 @@
 				841980551077237000C3FDD1 /* Namco109.cpp in Sources */,
 				841980561077237000C3FDD1 /* Namcot106.cpp in Sources */,
 				841980571077237000C3FDD1 /* NROM.cpp in Sources */,
+				DD921CCC1AE058CA004318A8 /* nfd_cocoa.m in Sources */,
 				841980581077237000C3FDD1 /* Rambo1.cpp in Sources */,
 				841980591077237000C3FDD1 /* Sunsoft3.cpp in Sources */,
 				8419805A1077237000C3FDD1 /* Sunsoft4.cpp in Sources */,
@@ -533,6 +562,7 @@
 				8419805C1077237000C3FDD1 /* UNROM.cpp in Sources */,
 				8419805D1077237000C3FDD1 /* UNROMReverse.cpp in Sources */,
 				8419805E1077237000C3FDD1 /* VRC1.cpp in Sources */,
+				DD921CCD1AE058CA004318A8 /* nfd_common.c in Sources */,
 				8419805F1077237000C3FDD1 /* VRC2.4.cpp in Sources */,
 				841980601077237000C3FDD1 /* VRC3.cpp in Sources */,
 				841980611077237000C3FDD1 /* VRC6.cpp in Sources */,

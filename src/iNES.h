@@ -20,6 +20,6 @@ void CloseDatabase();
 
 template <class T> ROM* ConstructMapper( const TimingSettings *Timing ) { return new T(Timing); }
 typedef ROM* (*MapperConstructor)( const TimingSettings *Timing );
-Famicom* LoadINes( char *path );
+Famicom* LoadINes( const char *path );
 
 #endif

@@ -56,7 +56,7 @@ void CloseDatabase()
 	delete nestopiaDB;
 }
 
-Famicom* LoadINes( char *path )
+Famicom* LoadINes( const char *path )
 {
 	SDL_RWops *fo = SDL_RWFromFile(path, "rb");
 

@@ -65,9 +65,14 @@ void ConfigureAudio( int rate, Famicom *sys )
 	sys->ConfigureAudio( obtained.freq, obtained.samples );
 }
 
-void loadFamicom( char *szFile )
+void loadFamicom()
 {
-	Famicom *loaded;
+    const char *szFile = GetRomFilename();
+    if (!szFile) {
+        return ;
+    }
+    
+    Famicom *loaded;
 	loaded = LoadINes( szFile );
 	
 	if( loaded )
@@ -137,9 +142,6 @@ int main( int argc, char** argv )
 	ControlPort1 = new Gamepad( &config.Gamepad1 );
 	ControlPort2 = new Gamepad( &config.Gamepad2 );
 
-	if( argc > 1 )
-		loadFamicom( argv[1] );
-
 	// --- CORE EMULATION / PROGRAM LOOP ---
 		
 	bool running = true;
@@ -172,12 +174,7 @@ int main( int argc, char** argv )
 							break ;					
 						case SDLK_o:
 							SDL_PauseAudio(true);
-							
-							char szFile[1024];			
-
-							if ( GetRomFilename( szFile, sizeof(szFile) ) )
-								loadFamicom( szFile );
-
+                            loadFamicom();
 							SDL_PauseAudio( false );
 
 							break ;

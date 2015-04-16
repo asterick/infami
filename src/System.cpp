@@ -1,19 +1,15 @@
 #undef UNICODE
 
-#ifdef WIN32
-	#include <windows.h>
-	#include <direct.h>
-#else
-	#include <sys/stat.h>
+#include <sys/stat.h>
 
-	#define strcpy_s( a, s, b ) strcpy( a, b )
-	#define strcat_s( a, s, b ) strcat( a, b )
-#endif
+#define strcpy_s( a, s, b ) strcpy( a, b )
+#define strcat_s( a, s, b ) strcat( a, b )
 
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "SDL.h"
+#include "SDL2/SDL.h"
+#include "Dialogs/include/nfd.h"
 #include "System.h"
 
 char g_SavePath[CONFIG_STR_LEN];
@@ -87,57 +83,21 @@ void SaveConfiguration( const char* executable, SystemConfig& config )
 	SDL_RWclose(fo);
 }
 
-#ifdef WIN32
-bool GetRomFilename( char *fileName, int bufferLen )
+const char *GetRomFilename()
 {
-	OPENFILENAME ofn;
+    char *fileName;
+    nfdresult_t result = NFD_OpenDialog( "nes", NULL, &fileName );
 
-	ZeroMemory(&ofn, sizeof(ofn));
-	ofn.lStructSize = sizeof(ofn);
-	ofn.lpstrFile = fileName;
-	ofn.lpstrFile[0] = '\0';
-	ofn.nMaxFile = bufferLen;
-	ofn.lpstrFilter = "iNES Roms\0*.NES\0All\0*.*\0";
-	ofn.nFilterIndex = 1;
-	ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
-	
-	if ( GetOpenFileName(&ofn) == TRUE )
-		return true;
-	else
-		return false;
+    return result == NFD_OKAY ? fileName : NULL;
 }
 
-bool GetDiskFilename( char *fileName, int bufferLen )
+const char *GetDiskFilename()
 {
-	OPENFILENAME ofn;
-
-	ZeroMemory(&ofn, sizeof(ofn));
-	ofn.lStructSize = sizeof(ofn);
-	ofn.lpstrFile = fileName;
-	ofn.lpstrFile[0] = '\0';
-	ofn.nMaxFile = bufferLen;
-	ofn.lpstrFilter = "Famicom Disk System Image (*.FDS)\0*.FDS\0All\0*.*\0";
-	ofn.nFilterIndex = 1;
-	ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
-	
-	if ( GetOpenFileName(&ofn) == TRUE )
-		return true;
-	else
-		return false;
+    char *fileName;
+    nfdresult_t result = NFD_OpenDialog( "dsk", NULL, &fileName );
+    
+    return result == NFD_OKAY ? fileName : NULL;
 }
-#else
-bool GetRomFilename( char *fileName, int bufferLen )
-{
-    *fileName = 0;
-    return false;
-}
-
-bool GetDiskFilename( char *fileName, int bufferLen )
-{
-    *fileName = 0;
-    return false;
-}
-#endif
 
 const char* GetDatabaseName()
 {

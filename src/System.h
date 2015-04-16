@@ -15,8 +15,8 @@ struct SystemConfig
 
 extern "C" 
 {
-	bool GetRomFilename( char *fileName, int bufferLen );
-	bool GetDiskFilename( char *fileName, int bufferLen );
+	const char *GetRomFilename();
+	const char *GetDiskFilename();
 	bool GetFileName( char* dst, int size, const char *src, const char *extension );
 	const char* GetDatabaseName();
 	
