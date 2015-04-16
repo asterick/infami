@@ -61,9 +61,9 @@ PPU::PPU( int verticalLines )
 
 		// Priority encoder
 		if( (i & 0x200) )	// PF priority
-			color = (i & 0x003) ? (i & 0xF) : ((i >> 4) & 0xF | 0x10);
+			color = (i & 0x003) ? (i & 0xF) : (((i >> 4) & 0xF) | 0x10);
 		else				// SPR Priority
-			color = (i & 0x030) ? ((i >> 4) & 0xF | 0x10) : (i & 0xF);
+			color = (i & 0x030) ? (((i >> 4) & 0xF) | 0x10) : (i & 0xF);
 
 		// color 0 for any pallete points to color 0 pallete 0
 		color = (color & 3) ? (color & 0x1F) : 0;

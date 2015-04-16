@@ -1,4 +1,4 @@
-#include "SDL.h"
+#include "SDL2/SDL.h"
 #include "System.h"
 
 #include "Emulation/Emulation.h"
@@ -93,8 +93,10 @@ void loadFamicom( char *szFile )
 
 int main( int argc, char** argv )
 {
-	SDL_Surface *screen = NULL;
-		
+    SDL_Window *sdlWindow;
+    SDL_Renderer *sdlRenderer;
+    SDL_Texture *sdlTexture;
+
 	LoadConfiguration( argv[0], config );
 	
 	/* initialize SDL */
@@ -115,10 +117,18 @@ int main( int argc, char** argv )
 
 	int videoModes = SDL_SWSURFACE;
 
-	screen = SDL_SetVideoMode( 640, 480, 32, videoModes );
-	SDL_WM_SetCaption( "inFami", NULL );
+    SDL_CreateWindowAndRenderer(640, 480, videoModes, &sdlWindow, &sdlRenderer);
 
-	for( int i = 0; i < SDL_NumJoysticks(); i++ )
+    sdlTexture = SDL_CreateTexture(sdlRenderer,
+                                   SDL_PIXELFORMAT_ARGB8888,
+                                   SDL_TEXTUREACCESS_STREAMING,
+                                   640, 480);
+
+    SDL_SetRenderDrawColor(sdlRenderer, 0, 0, 0, 255);
+    SDL_RenderClear(sdlRenderer);
+    SDL_RenderPresent(sdlRenderer);
+    
+    for( int i = 0; i < SDL_NumJoysticks(); i++ )
 		SDL_JoystickOpen(i);
 
 	LoadDatabase(GetDatabaseName());
@@ -147,15 +157,14 @@ int main( int argc, char** argv )
 					break ;
 				case SDL_KEYDOWN:  /* Handle a KEYDOWN event */
 					// Meta is used so mac keys make sense
-					if( event.key.keysym.mod & (KMOD_CTRL | KMOD_SHIFT | KMOD_META) )	
+					if( event.key.keysym.mod & (KMOD_CTRL | KMOD_SHIFT) )
 					{
 						switch( event.key.keysym.sym )
 						{
 						case SDLK_f:
-							videoModes ^= SDL_FULLSCREEN;
-							screen = SDL_SetVideoMode( 640, 480, 32, videoModes );
-							SDL_WM_SetCaption( "inFami", NULL );
-							SDL_ShowCursor( (videoModes & SDL_FULLSCREEN) ? SDL_DISABLE : SDL_ENABLE );
+							videoModes ^= SDL_WINDOW_FULLSCREEN;
+                            SDL_SetWindowFullscreen(sdlWindow, videoModes);
+							SDL_ShowCursor( (videoModes & SDL_WINDOW_FULLSCREEN) ? SDL_DISABLE : SDL_ENABLE );
 
 							break ;
 						case SDLK_q:
@@ -184,7 +193,7 @@ int main( int argc, char** argv )
 						}
 					}
 				case SDL_KEYUP:
-					if( event.key.keysym.mod & (KMOD_CTRL | KMOD_SHIFT | KMOD_META) )
+					if( event.key.keysym.mod & (KMOD_CTRL | KMOD_SHIFT) )
 						break ;
 
 					if( ControlPort1 != NULL )
@@ -215,7 +224,7 @@ int main( int argc, char** argv )
 							(event.jhat.hat << 8) | 
 							((event.jhat.value > 0) ? 0x01 : 0x02);
 
-						bool pressed = (abs(event.jhat.value) > 0x40);
+                        bool pressed = !(event.jhat.value & SDL_HAT_CENTERED);
 
 						if( ControlPort1 != NULL )
 							ControlPort1->HandleEvent( pressed, buttonID );
@@ -269,15 +278,20 @@ int main( int argc, char** argv )
 			while( frame == NULL )
 				frame = machine->Execute();
 
-			filter->BlitFrame( screen, frame, PPU_PITCH );
+
+            unsigned int pixels[640*480];
+			filter->BlitFrame( pixels, frame, PPU_PITCH );
+            SDL_UpdateTexture(sdlTexture, NULL, pixels, 640 * (int)sizeof(unsigned int));
 		}
 		else
 		{
 			SDL_Delay(100);
 		}
 	
-		SDL_Flip( screen );
-		ShowFPS();
+        SDL_RenderClear(sdlRenderer);
+        SDL_RenderCopy(sdlRenderer, sdlTexture, NULL, NULL);
+        SDL_RenderPresent(sdlRenderer);
+        ShowFPS();
 	}
 	while( running );
 

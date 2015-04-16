@@ -125,6 +125,18 @@ bool GetDiskFilename( char *fileName, int bufferLen )
 	else
 		return false;
 }
+#else
+bool GetRomFilename( char *fileName, int bufferLen )
+{
+    *fileName = 0;
+    return false;
+}
+
+bool GetDiskFilename( char *fileName, int bufferLen )
+{
+    *fileName = 0;
+    return false;
+}
 #endif
 
 const char* GetDatabaseName()

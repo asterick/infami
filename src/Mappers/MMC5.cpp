@@ -650,7 +650,7 @@ unsigned char MMC5::VideoRead()
 			else
 			{
 				m_ExAttribute	= m_ExRam[ m_VideoAddress & 0x3FF ];
-				m_ExTile		= ((m_ExAttribute & 0x3F) << 12) | (m_CHRExtender << 18) & ChrMask;
+				m_ExTile		= ((m_ExAttribute & 0x3F) << 12) | ((m_CHRExtender << 18) & ChrMask);
 				m_ExAttribute >>= 6;
 				
 				if( m_FillMode[page] )
