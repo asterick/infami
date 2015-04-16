@@ -3,11 +3,11 @@
 PPU::PPU( int verticalLines )
 {
 	m_VerticalBlankPeriod = verticalLines * 341;
-	
+
 	m_HPos	= 0;						// Start at pixel clock 0
 	m_VPos	= 0;						// Start at active display, first active pixel
 	m_Pixel	= m_Frame;
-	
+
 	m_VBlank = 0;
 	m_Sprite0Hit = 0;
 	m_SpriteOverflow = 0;
@@ -26,7 +26,7 @@ PPU::PPU( int verticalLines )
 	m_PFPattern = 0;
 	m_OBJPattern = 0;
 	m_OAMAddress = 0;
-	
+
 	m_NMISupressable = 0;
 
 	m_SpritesFound = 0;
@@ -148,7 +148,7 @@ inline void PPU::WriteHorizontal( unsigned char Byte )
 
 inline void PPU::WriteVertical( unsigned char Byte )
 {
-	m_ScrollHolding = 
+	m_ScrollHolding =
 		((Byte & 0x7) << 12) |
 		((Byte & 0xF8) << 2) |
 		(0x0C1F & m_ScrollHolding);
@@ -289,8 +289,8 @@ inline unsigned short PPU::IncrementHorizontal( unsigned short addr )
 
 inline unsigned short PPU::IncrementVertical( unsigned short addr )
 {
-	// Vertical scroll masks back in old values 
-	addr = ((addr + 0x1000)& 0x7BE0) | (m_ScrollHolding & 0x041F);	
+	// Vertical scroll masks back in old values
+	addr = ((addr + 0x1000)& 0x7BE0) | (m_ScrollHolding & 0x041F);
 
 	if( (addr & 0x7000) == 0 )
 	{
@@ -321,7 +321,7 @@ inline void PPU::ClockPlayfield( int hpos, int vpos )
 		case 0:
 			VideoAddressLatch( (m_VRAMAddress & 0xFFF) | 0x2000 );
 			break ;
-		case 1:	// Nametable byte read			
+		case 1:	// Nametable byte read
 			m_PatternAddress = (VideoRead() << 4) | m_PFPattern;
 			break ;
 		case 2:
@@ -363,7 +363,7 @@ inline void PPU::ClockPlayfield( int hpos, int vpos )
 
 			m_VRAMAddress = IncrementHorizontal(m_VRAMAddress);
 			break ;
-		}		
+		}
 	}
 	// OAM PATTERN READS
 	else if( hpos < 320 )
@@ -392,7 +392,7 @@ inline void PPU::ClockPlayfield( int hpos, int vpos )
 			else
 				VideoAddressLatch( (m_VRAMAddress & 0xFFF) | 0x2000 );
 			break ;
-		case 1:	
+		case 1:
 		case 3:	// Junk nametable
 			VideoRead();
 			break ;
@@ -428,7 +428,7 @@ inline void PPU::ClockPlayfield( int hpos, int vpos )
 		case 0:
 			VideoAddressLatch( (m_VRAMAddress & 0xFFF) | 0x2000 );
 			break ;
-		case 1:	// Nametable byte read			
+		case 1:	// Nametable byte read
 			m_PatternAddress = (VideoRead() << 4) | m_PFPattern;
 			break ;
 		case 2:
@@ -468,10 +468,10 @@ inline void PPU::ClockPlayfield( int hpos, int vpos )
 
 			m_VRAMAddress = IncrementHorizontal(m_VRAMAddress);
 			break ;
-		}		
+		}
 	}
 	// GARBAGE READS CYCLES
-	else	
+	else
 	{
 		if( ~hpos & 1 )
 			VideoAddressLatch( (m_VRAMAddress & 0xFFF) | 0x2000 );
@@ -529,7 +529,7 @@ inline void PPU::ClockOAM( int hpos, int vpos )
 			case COMPARE_Y:
 				m_OAMBuffer =  m_OAMMemory[m_OAMLoadLocation];
 				holding = vpos - m_OAMBuffer - 1;
-				
+
 				// Value is not in range
 				if( holding < 0 || holding >= m_SpriteHeight )
 				{
@@ -568,14 +568,14 @@ inline void PPU::ClockOAM( int hpos, int vpos )
 
 				if( m_SpriteHeight == 8 )
 				{
-					Sprites[m_SpritesFound].Pattern = 
+					Sprites[m_SpritesFound].Pattern =
 						(Sprites[m_SpritesFound].Tile << 4)	|	// Tile * 16
 						holding;								// Y Coordinate with flipping
-				}			
+				}
 				else
 				{
 					int tile = Sprites[m_SpritesFound].Tile;
-					
+
 					if( holding >= 8 )
 						holding += 8;
 
@@ -604,7 +604,7 @@ inline void PPU::ClockOAM( int hpos, int vpos )
 				m_OAMBuffer = m_OAMMemory[m_OAMLoadLocation];
 				m_OAMLoadLocation += 4;
 				break ;
-			
+
 			/* 8 sprites have been found, Start with the buggy comparison */
 			case MOCK_COPY1:
 			case MOCK_COPY2:
@@ -656,7 +656,7 @@ void PPU::RenderOAM()
 	memset( m_OBJSerializer, 0, sizeof(m_OBJSerializer) );
 
 	for( int i = m_SpritesFound-1; i >= 0; i-- )
-	{		
+	{
 		int x = Sprites[i].X;
 		int mask = Sprites[i].Mask;
 		int p0 = Sprites[i].Pat0;
@@ -668,10 +668,10 @@ void PPU::RenderOAM()
 			for( int b = 0; b <= 7; b++, x++ )
 			{
 				clr = ((p0 >> b) & 1) |	((p1 >> b) & 2) | mask;
-				
+
 				if( clr & 3 )
 					m_OBJSerializer[x] = clr;
-			}				
+			}
 		}
 		else
 		{
@@ -724,16 +724,16 @@ unsigned short* PPU::VideoClock()
 
 					if( m_HPos < 8 )
 					{
-						bg  = (m_PFEnable && m_PFNoClip) ? 
+						bg  = (m_PFEnable && m_PFNoClip) ?
 							m_PFSerializer[m_HPos + m_ScrollHorizontal] : 0;
-						spr = (m_OAMEnable && m_OAMNoClip) ? 
+						spr = (m_OAMEnable && m_OAMNoClip) ?
 							m_OBJSerializer[m_HPos] : 0;
 					}
 					else
 					{
-						bg	= m_PFEnable ? 
+						bg	= m_PFEnable ?
 							m_PFSerializer[m_HPos + m_ScrollHorizontal] : 0;
-						spr = m_OAMEnable ? 
+						spr = m_OAMEnable ?
 							m_OBJSerializer[m_HPos] : 0;
 					}
 
@@ -751,11 +751,11 @@ unsigned short* PPU::VideoClock()
 			{
 				if( m_HPos < 256 )
 					*(m_Pixel++) = (m_Palette[0] & m_ColorMask) | m_Intensify;
-	
+
 				if( ~m_HPos & 1 )
 				{
 					VideoAddressLatch( m_VRAMAddress );
-				}				
+				}
 			}
 
 			m_HPos++;
@@ -768,23 +768,23 @@ unsigned short* PPU::VideoClock()
 			VideoAddressLatch( m_VRAMAddress );
 
 		m_OAMBuffer = m_OAMMemory[m_OAMAddress];
-		
+
 		if( ++m_HPos == 341 )
 		{
 			if( !m_SupressVBL )
 			{
 				m_VBlank = VBLANK_VALUE;
-				m_NMIDelay = true;	
+				m_NMIDelay = true;
 				m_NMIActive = true;
 			}
-			
+
 			m_NMISupressable = 2;
 
 			m_VPos++;
 			m_HPos = m_VerticalBlankPeriod;
 
 			// Return our frame buffer one line late (first line is garbage)
-			return m_Frame + PPU_PITCH;
+			return m_Frame + PPU_WIDTH;
 		}
 		m_SupressVBL = false;
 	}
@@ -794,7 +794,7 @@ unsigned short* PPU::VideoClock()
 			VideoAddressLatch( m_VRAMAddress );
 
 		m_OAMBuffer = m_OAMMemory[m_OAMAddress];
-		
+
 		m_HPos--;
 
 		// Dropped cycle

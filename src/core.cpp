@@ -11,7 +11,6 @@
 
 Gamepad *ControlPort1 = NULL;
 Gamepad *ControlPort2 = NULL;
-Famicom *machine = NULL;
 SystemConfig config;
 
 void ShowFPS()
@@ -64,42 +63,40 @@ void ConfigureAudio( int rate, Famicom *sys )
 	sys->ConfigureAudio( obtained.freq, obtained.samples );
 }
 
-void loadFamicom()
+Famicom *loadFamicom()
 {
     const char *szFile = GetRomFilename();
+
     if (!szFile) {
-        return ;
+        return NULL;
     }
 
-    Famicom *loaded;
-	loaded = LoadINes( szFile );
+    Famicom *loaded = LoadINes( szFile );
 
 	if( loaded )
 	{
 		// Reset the NES (grrrr)
 		loaded->Restart();
 
-		if( machine != NULL )
-		{
-			SDL_CloseAudio();
-			delete machine;
-		}
-
 		//ConfigureAudio(config.SampleRate, loaded);
-
 		if( ControlPort1 )
 			loaded->InsertController( false, ControlPort1 );
 		if( ControlPort2 )
 			loaded->InsertController( true, ControlPort2 );
-		machine = loaded;
 	}
+
+	return loaded;
 }
 
 int main( int argc, char** argv )
 {
+    Famicom *machine = NULL;
+
     SDL_Window *sdlWindow;
     SDL_Renderer *sdlRenderer;
     SDL_Texture *sdlTexture;
+
+	uint32_t* pixels = new uint32_t[SCREEN_WIDTH*SCREEN_HEIGHT];
 
 	LoadConfiguration( argv[0], config );
 
@@ -121,7 +118,10 @@ int main( int argc, char** argv )
 
 	int videoModes = 0;
 
-    SDL_CreateWindowAndRenderer(640, 480, videoModes, &sdlWindow, &sdlRenderer);
+	sdlWindow = SDL_CreateWindow("inFami",
+        SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 640, 480, videoModes);
+
+	sdlRenderer = SDL_CreateRenderer(sdlWindow, -1, 0);
 
     sdlTexture = SDL_CreateTexture(sdlRenderer,
                                    SDL_PIXELFORMAT_ARGB8888,
@@ -143,23 +143,18 @@ int main( int argc, char** argv )
 
 	bool running = true;
 
-	do
-	{
+	do {
 		SDL_Event event;
 
-		while(SDL_PollEvent(&event))
-		{
-			switch(event.type)
-			{
+		while(SDL_PollEvent(&event)) {
+			switch(event.type) {
 				case SDL_QUIT:
 					running = false;
 					break ;
 				case SDL_KEYDOWN:  /* Handle a KEYDOWN event */
 					// Meta is used so mac keys make sense
-					if( event.key.keysym.mod & (KMOD_CTRL | KMOD_SHIFT) )
-					{
-						switch( event.key.keysym.sym )
-						{
+					if( event.key.keysym.mod & (KMOD_CTRL | KMOD_SHIFT | KMOD_GUI) ) {
+						switch( event.key.keysym.sym ) {
 						case SDLK_f:
 							videoModes ^= SDL_WINDOW_FULLSCREEN;
                             SDL_SetWindowFullscreen(sdlWindow, videoModes);
@@ -170,9 +165,20 @@ int main( int argc, char** argv )
 							running = false;
 							break ;
 						case SDLK_o:
-							SDL_PauseAudio(true);
-                            loadFamicom();
-							SDL_PauseAudio( false );
+							{
+								//SDL_PauseAudio(true);
+
+								if (machine) {
+									//SDL_CloseAudio();
+									delete machine;
+								}
+
+								Famicom *loaded = loadFamicom();
+								if (loaded) {
+		                            machine = loaded;
+									//SDL_PauseAudio( false );
+								}
+							}
 
 							break ;
 						case SDLK_r:
@@ -187,7 +193,7 @@ int main( int argc, char** argv )
 						}
 					}
 				case SDL_KEYUP:
-					if( event.key.keysym.mod & (KMOD_CTRL | KMOD_SHIFT) )
+					if( event.key.keysym.mod & (KMOD_CTRL | KMOD_SHIFT | KMOD_GUI) )
 						break ;
 
 					if( ControlPort1 != NULL )
@@ -261,34 +267,33 @@ int main( int argc, char** argv )
 			}
 		}
 
-		// Main emulation loop
-		if( machine != NULL )
-		{
-			unsigned short *frame = NULL;
-
-			while( SDL_GetAudioStatus() == SDL_AUDIO_PLAYING &&
-				  machine->AudioFull() )
-				SDL_Delay(5);
-			while( frame == NULL )
-				frame = machine->Execute();
-
-            uint32_t pixels[480][640];
-			filter->BlitFrame( &pixels[0][0], frame, PPU_PITCH );
-            SDL_UpdateTexture(sdlTexture, NULL, pixels, (int)sizeof(pixels[0]));
-		}
-		else
-		{
+		if (!machine) {
 			SDL_Delay(100);
+			continue ;
 		}
+
+		SDL_UpdateTexture(sdlTexture, NULL, pixels, texturePitch);
+
+		// Main emulation loop
+		unsigned short *frame = NULL;
+
+		while( SDL_GetAudioStatus() == SDL_AUDIO_PLAYING && machine->AudioFull() ) {
+			SDL_Delay(5);
+		}
+
+		while( frame == NULL ) {
+			frame = machine->Execute();
+		}
+
+		filter->BlitFrame( pixels, (int)SCREEN_WIDTH * sizeof(uint32_t), frame );
 
         SDL_RenderClear(sdlRenderer);
         SDL_RenderCopy(sdlRenderer, sdlTexture, NULL, NULL);
         SDL_RenderPresent(sdlRenderer);
-        ShowFPS();
-	}
-	while( running );
 
-	SDL_Quit();
+        ShowFPS();
+	} while( running );
+
 	SaveConfiguration( argv[0], config );
 
 	CloseDatabase();
@@ -297,11 +302,17 @@ int main( int argc, char** argv )
 		delete machine;
 
 	delete filter;
+	delete pixels;
 
 	if( ControlPort1 != NULL )
 		delete ControlPort1;
 	if( ControlPort2 != NULL )
 		delete ControlPort2;
+
+    SDL_DestroyTexture(sdlTexture);
+    SDL_DestroyRenderer(sdlRenderer);
+    SDL_DestroyWindow(sdlWindow);
+	SDL_Quit();
 
 	return 0;
 }

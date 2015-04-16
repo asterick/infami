@@ -46,7 +46,7 @@ void LoadDatabase( const char *path )
 
 	nestopiaDB[files].CRC32 = 0;
 
-	printf("Nestopia header database found... %i decriptions loaded.\n", files );
+	printf("Nestopia header database found... %i descriptions loaded.\n", files );
 
 	SDL_RWclose(fo);
 }

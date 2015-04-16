@@ -8,7 +8,7 @@ class NTSCFilter : public VideoFilter
 public:
 	NTSCFilter();
 	~NTSCFilter();
-	virtual void BlitFrame( uint32_t *screen, uint16_t *pixels, int PPU_Pitch );
+	virtual void BlitFrame( uint32_t *screen, int pitch, uint16_t *pixels );
 
 private:
 	nes_ntsc_t* ntsc;

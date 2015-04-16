@@ -5,13 +5,11 @@
 
 #define SCREEN_WIDTH	640
 #define SCREEN_HEIGHT	480
-#define SCREEN_PIXEL	(int)sizeof(uint32_t)
-#define SCREEN_PITCH	(SCREEN_WIDTH * SCREEN_PIXEL)
 
 class VideoFilter
 {
 public:
-	virtual void BlitFrame( uint32_t *source, uint16_t *pixels, int PPU_Pitch ) {}
+	virtual void BlitFrame( uint32_t *source, int pitch, uint16_t *pixels ) {}
 };
 
 const uint32_t NesPalette[512] =
