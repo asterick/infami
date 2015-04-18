@@ -1,34 +1,26 @@
 #undef UNICODE
 
-#ifdef WIN32
-	#include <windows.h>
-	#include <direct.h>
-#else
-	#include <sys/stat.h>
-
-	#define strcpy_s( a, s, b ) strcpy( a, b )
-	#define strcat_s( a, s, b ) strcat( a, b )
-#endif
+#include <sys/stat.h>
 
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "SDL.h"
+#include "SDL2/SDL.h"
+#include "nfd.h"
 #include "System.h"
 
 char g_SavePath[CONFIG_STR_LEN];
 
 void LoadConfiguration( const char* executable, SystemConfig& config )
 {
-	
 	// -- Set save path inside of the install directory
-	strcpy_s( g_SavePath, sizeof(g_SavePath), executable );
+	strncpy( g_SavePath, executable, sizeof(g_SavePath) );
 	char *ptr = g_SavePath + strlen(g_SavePath);
 	while( *ptr !='\\' && *ptr != '/' && ptr != g_SavePath)
 		ptr--;
 	*ptr = 0;
-	strcat_s( g_SavePath, sizeof(g_SavePath), "/saves" );
-	
+	strncat( g_SavePath, "/saves", sizeof(g_SavePath) - strlen(g_SavePath) - 1);
+
 	#ifdef WIN32
 		_mkdir( g_SavePath );
 	#else
@@ -37,7 +29,7 @@ void LoadConfiguration( const char* executable, SystemConfig& config )
 
 	// --- FILL IN DEFAULT PARAMETERS BEFORE LOADING ---
 	config.SampleRate = 44100;
-	
+
 	config.Gamepad1.AKeyCode = SDLK_x;
 	config.Gamepad1.BKeyCode = SDLK_z;
 	config.Gamepad1.SelectKeyCode = SDLK_TAB;
@@ -64,7 +56,7 @@ void LoadConfiguration( const char* executable, SystemConfig& config )
 
 	if( fo == NULL )
 		return ;
-	
+
 	SDL_RWseek( fo, 0, SEEK_END );
 	int length = SDL_RWtell(fo) + 1;
 	SDL_RWseek( fo, 0, SEEK_SET );
@@ -75,7 +67,7 @@ void LoadConfiguration( const char* executable, SystemConfig& config )
 void SaveConfiguration( const char* executable, SystemConfig& config )
 {
 	char path[512];
-	
+
     GetFileName( path, sizeof(path), executable, ".cfg" );
 
 	SDL_RWops *fo = SDL_RWFromFile( path, "wb" );
@@ -87,66 +79,39 @@ void SaveConfiguration( const char* executable, SystemConfig& config )
 	SDL_RWclose(fo);
 }
 
-#ifdef WIN32
-bool GetRomFilename( char *fileName, int bufferLen )
+const char *GetRomFilename()
 {
-	OPENFILENAME ofn;
+    char *fileName;
+    nfdresult_t result = NFD_OpenDialog( "nes", NULL, &fileName );
 
-	ZeroMemory(&ofn, sizeof(ofn));
-	ofn.lStructSize = sizeof(ofn);
-	ofn.lpstrFile = fileName;
-	ofn.lpstrFile[0] = '\0';
-	ofn.nMaxFile = bufferLen;
-	ofn.lpstrFilter = "iNES Roms\0*.NES\0All\0*.*\0";
-	ofn.nFilterIndex = 1;
-	ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
-	
-	if ( GetOpenFileName(&ofn) == TRUE )
-		return true;
-	else
-		return false;
+    return result == NFD_OKAY ? fileName : NULL;
 }
 
-bool GetDiskFilename( char *fileName, int bufferLen )
+const char *GetDiskFilename()
 {
-	OPENFILENAME ofn;
+    char *fileName;
+    nfdresult_t result = NFD_OpenDialog( "dsk", NULL, &fileName );
 
-	ZeroMemory(&ofn, sizeof(ofn));
-	ofn.lStructSize = sizeof(ofn);
-	ofn.lpstrFile = fileName;
-	ofn.lpstrFile[0] = '\0';
-	ofn.nMaxFile = bufferLen;
-	ofn.lpstrFilter = "Famicom Disk System Image (*.FDS)\0*.FDS\0All\0*.*\0";
-	ofn.nFilterIndex = 1;
-	ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
-	
-	if ( GetOpenFileName(&ofn) == TRUE )
-		return true;
-	else
-		return false;
+    return result == NFD_OKAY ? fileName : NULL;
 }
-#endif
 
 const char* GetDatabaseName()
 {
 	static char path[512];
-	
-    strcpy_s( path, sizeof(path), g_SavePath );
-	strcat_s( path, sizeof(path), "/NstDatabase.dat" );
-	
+
+    snprintf(path, sizeof(path), "%s/NstDatabase.dat", g_SavePath);
+
 	return path;
 }
 
 bool GetFileName( char* dst, int size, const char *src, const char *extension )
-{    
+{
 	const char *basePath = src + strlen(src);
 
     while( basePath != src && *basePath != '/' && *basePath != '\\' )
         basePath--;
 
-    strcpy_s( dst, size, g_SavePath );
-    strcat_s( dst, size, basePath );
-    strcat_s( dst, size, extension );
+    snprintf(dst, size, "%s%s%s", g_SavePath, basePath, extension);
 
 	return true;
 }

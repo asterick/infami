@@ -1,8 +1,7 @@
-#include "SDL.h"
+#include "../Emulation/PPU.h"
 
 #include "VideoFilter.h"
 #include "NTSCFilter.h"
-
 
 NTSCFilter::NTSCFilter()
 {
@@ -17,30 +16,12 @@ NTSCFilter::~NTSCFilter()
 	delete ntsc;
 }
 
-void NTSCFilter::BlitFrame( SDL_Surface *source, unsigned short *pixels, int PPU_Pitch )
+void NTSCFilter::BlitFrame( uint32_t *out_line, int pitch, uint16_t *pixels )
 {
-	SDL_LockSurface( source );
+	out_line += (SCREEN_WIDTH - NES_NTSC_OUT_WIDTH(PPU_WIDTH)) / 2;
 
-	unsigned int *out_line = (unsigned int*) source->pixels;
-
-	out_line += (source->w - NES_NTSC_OUT_WIDTH(PPU_Pitch)) / 2;
-
-	nes_ntsc_blit( ntsc, pixels, PPU_Pitch, BurstPhase,
-		PPU_Pitch, 240, out_line, source->pitch*2 );
-
-	unsigned int *out_line_e = (unsigned int*) source->pixels;
-	unsigned int *out_line_o = (unsigned int*) out_line_e + (source->pitch/4);
-
-	for( int y = source->h/2; y; y-- )
-	{
-		for( int i = source->w; i; i-- )
-			*(out_line_o++) = *(out_line_e++);
-
-		out_line_o += (source->pitch/4);
-		out_line_e += (source->pitch/4);
-	}
-
-	SDL_UnlockSurface(source);
+	nes_ntsc_blit( ntsc, pixels, PPU_WIDTH, BurstPhase,
+		PPU_WIDTH, 240, out_line, pitch*2 );
 
 	BurstPhase = 1-BurstPhase;
 }

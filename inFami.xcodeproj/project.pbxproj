@@ -7,8 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		002F39FA09D0881F00EBEB88 /* SDL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 002F39F909D0881F00EBEB88 /* SDL.framework */; };
-		002F3A0009D0884600EBEB88 /* SDL.framework in Copy Frameworks into .app bundle */ = {isa = PBXBuildFile; fileRef = 002F39F909D0881F00EBEB88 /* SDL.framework */; };
 		841980311077237000C3FDD1 /* core.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84197FBD1077237000C3FDD1 /* core.cpp */; };
 		841980321077237000C3FDD1 /* APU.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84197FBF1077237000C3FDD1 /* APU.cpp */; };
 		841980331077237000C3FDD1 /* Controller.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84197FC11077237000C3FDD1 /* Controller.cpp */; };
@@ -20,13 +18,10 @@
 		841980391077237000C3FDD1 /* ROM.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84197FCF1077237000C3FDD1 /* ROM.cpp */; };
 		8419803A1077237000C3FDD1 /* SquareAPU.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84197FD11077237000C3FDD1 /* SquareAPU.cpp */; };
 		8419803B1077237000C3FDD1 /* TriangleAPU.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84197FD31077237000C3FDD1 /* TriangleAPU.cpp */; };
-		8419803C1077237000C3FDD1 /* Hq2XFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84197FD61077237000C3FDD1 /* Hq2XFilter.cpp */; };
-		8419803D1077237000C3FDD1 /* nes_ntsc.c in Sources */ = {isa = PBXBuildFile; fileRef = 84197FD81077237000C3FDD1 /* nes_ntsc.c */; };
 		8419803E1077237000C3FDD1 /* NTSCFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84197FDC1077237000C3FDD1 /* NTSCFilter.cpp */; };
 		8419803F1077237000C3FDD1 /* unfiltered.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84197FDE1077237000C3FDD1 /* unfiltered.cpp */; };
 		841980401077237000C3FDD1 /* iNES.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84197FE21077237000C3FDD1 /* iNES.cpp */; };
 		841980411077237000C3FDD1 /* GamePad.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84197FE51077237000C3FDD1 /* GamePad.cpp */; };
-		841980421077237000C3FDD1 /* SDLMain.m in Sources */ = {isa = PBXBuildFile; fileRef = 84197FE91077237000C3FDD1 /* SDLMain.m */; };
 		841980431077237000C3FDD1 /* AxROM.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84197FEB1077237000C3FDD1 /* AxROM.cpp */; };
 		841980441077237000C3FDD1 /* Bandai70.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84197FED1077237000C3FDD1 /* Bandai70.cpp */; };
 		841980451077237000C3FDD1 /* BxNINA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84197FEF1077237000C3FDD1 /* BxNINA.cpp */; };
@@ -63,21 +58,11 @@
 		841980641077237000C3FDD1 /* System.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8419802F1077237000C3FDD1 /* System.cpp */; };
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
+		DD6617001AE04B08000A8D53 /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD6616FF1AE04B08000A8D53 /* SDL2.framework */; };
+		DDAF37431AE0694C00413E04 /* nes_ntsc.c in Sources */ = {isa = PBXBuildFile; fileRef = DDAF373D1AE0694C00413E04 /* nes_ntsc.c */; };
+		DDAF37441AE0694C00413E04 /* nfd_cocoa.m in Sources */ = {isa = PBXBuildFile; fileRef = DDAF373E1AE0694C00413E04 /* nfd_cocoa.m */; };
+		DDAF37451AE0694C00413E04 /* nfd_common.c in Sources */ = {isa = PBXBuildFile; fileRef = DDAF373F1AE0694C00413E04 /* nfd_common.c */; };
 /* End PBXBuildFile section */
-
-/* Begin PBXCopyFilesBuildPhase section */
-		002F39FD09D0883400EBEB88 /* Copy Frameworks into .app bundle */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				002F3A0009D0884600EBEB88 /* SDL.framework in Copy Frameworks into .app bundle */,
-			);
-			name = "Copy Frameworks into .app bundle";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		002F39F909D0881F00EBEB88 /* SDL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL.framework; path = /Library/Frameworks/SDL.framework; sourceTree = "<absolute>"; };
@@ -109,12 +94,6 @@
 		84197FD21077237000C3FDD1 /* SquareAPU.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SquareAPU.h; path = src/Emulation/SquareAPU.h; sourceTree = SOURCE_ROOT; };
 		84197FD31077237000C3FDD1 /* TriangleAPU.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TriangleAPU.cpp; path = src/Emulation/TriangleAPU.cpp; sourceTree = SOURCE_ROOT; };
 		84197FD41077237000C3FDD1 /* TriangleAPU.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TriangleAPU.h; path = src/Emulation/TriangleAPU.h; sourceTree = SOURCE_ROOT; };
-		84197FD61077237000C3FDD1 /* Hq2XFilter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Hq2XFilter.cpp; path = src/Filters/Hq2XFilter.cpp; sourceTree = SOURCE_ROOT; };
-		84197FD71077237000C3FDD1 /* Hq2XFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Hq2XFilter.h; path = src/Filters/Hq2XFilter.h; sourceTree = SOURCE_ROOT; };
-		84197FD81077237000C3FDD1 /* nes_ntsc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = nes_ntsc.c; path = src/Filters/nes_ntsc.c; sourceTree = SOURCE_ROOT; };
-		84197FD91077237000C3FDD1 /* nes_ntsc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = nes_ntsc.h; path = src/Filters/nes_ntsc.h; sourceTree = SOURCE_ROOT; };
-		84197FDA1077237000C3FDD1 /* nes_ntsc_config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = nes_ntsc_config.h; path = src/Filters/nes_ntsc_config.h; sourceTree = SOURCE_ROOT; };
-		84197FDB1077237000C3FDD1 /* nes_ntsc_impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = nes_ntsc_impl.h; path = src/Filters/nes_ntsc_impl.h; sourceTree = SOURCE_ROOT; };
 		84197FDC1077237000C3FDD1 /* NTSCFilter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NTSCFilter.cpp; path = src/Filters/NTSCFilter.cpp; sourceTree = SOURCE_ROOT; };
 		84197FDD1077237000C3FDD1 /* NTSCFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NTSCFilter.h; path = src/Filters/NTSCFilter.h; sourceTree = SOURCE_ROOT; };
 		84197FDE1077237000C3FDD1 /* unfiltered.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = unfiltered.cpp; path = src/Filters/unfiltered.cpp; sourceTree = SOURCE_ROOT; };
@@ -125,8 +104,6 @@
 		84197FE31077237000C3FDD1 /* iNES.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = iNES.h; path = src/iNES.h; sourceTree = SOURCE_ROOT; };
 		84197FE51077237000C3FDD1 /* GamePad.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GamePad.cpp; path = src/Input/GamePad.cpp; sourceTree = SOURCE_ROOT; };
 		84197FE61077237000C3FDD1 /* Gamepad.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Gamepad.h; path = src/Input/Gamepad.h; sourceTree = SOURCE_ROOT; };
-		84197FE81077237000C3FDD1 /* SDLMain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SDLMain.h; path = src/mac/SDLMain.h; sourceTree = SOURCE_ROOT; };
-		84197FE91077237000C3FDD1 /* SDLMain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SDLMain.m; path = src/mac/SDLMain.m; sourceTree = SOURCE_ROOT; };
 		84197FEB1077237000C3FDD1 /* AxROM.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AxROM.cpp; path = src/Mappers/AxROM.cpp; sourceTree = SOURCE_ROOT; };
 		84197FEC1077237000C3FDD1 /* AxROM.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AxROM.h; path = src/Mappers/AxROM.h; sourceTree = SOURCE_ROOT; };
 		84197FED1077237000C3FDD1 /* Bandai70.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Bandai70.cpp; path = src/Mappers/Bandai70.cpp; sourceTree = SOURCE_ROOT; };
@@ -199,6 +176,12 @@
 		841980301077237000C3FDD1 /* System.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = System.h; path = src/System.h; sourceTree = SOURCE_ROOT; };
 		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* inFami.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = inFami.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		DD6616FA1AE049F8000A8D53 /* Frameworks */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Frameworks; path = ../../../../Library/Frameworks; sourceTree = "<group>"; };
+		DD6616FB1AE049F8000A8D53 /* Graphics */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Graphics; path = ../../../../Library/Graphics; sourceTree = "<group>"; };
+		DD6616FF1AE04B08000A8D53 /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = ../../../../Library/Frameworks/SDL2.framework; sourceTree = "<group>"; };
+		DDAF373D1AE0694C00413E04 /* nes_ntsc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = nes_ntsc.c; sourceTree = "<group>"; };
+		DDAF373E1AE0694C00413E04 /* nfd_cocoa.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = nfd_cocoa.m; sourceTree = "<group>"; };
+		DDAF373F1AE0694C00413E04 /* nfd_common.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = nfd_common.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -206,7 +189,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				002F39FA09D0881F00EBEB88 /* SDL.framework in Frameworks */,
+				DD6617001AE04B08000A8D53 /* SDL2.framework in Frameworks */,
 				8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -250,6 +233,7 @@
 		29B97314FDCFA39411CA2CEA /* inFami */ = {
 			isa = PBXGroup;
 			children = (
+				DDAF373C1AE0694C00413E04 /* lib */,
 				84197FBC1077237000C3FDD1 /* src */,
 				080E96DDFE201D6D7F000001 /* Classes */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
@@ -280,6 +264,9 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				DD6616FF1AE04B08000A8D53 /* SDL2.framework */,
+				DD6616FA1AE049F8000A8D53 /* Frameworks */,
+				DD6616FB1AE049F8000A8D53 /* Graphics */,
 				1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */,
 				1058C7A2FEA54F0111CA2CBB /* Other Frameworks */,
 			);
@@ -296,7 +283,6 @@
 				84197FE21077237000C3FDD1 /* iNES.cpp */,
 				84197FE31077237000C3FDD1 /* iNES.h */,
 				84197FE41077237000C3FDD1 /* Input */,
-				84197FE71077237000C3FDD1 /* mac */,
 				84197FEA1077237000C3FDD1 /* Mappers */,
 				8419802F1077237000C3FDD1 /* System.cpp */,
 				841980301077237000C3FDD1 /* System.h */,
@@ -337,12 +323,6 @@
 		84197FD51077237000C3FDD1 /* Filters */ = {
 			isa = PBXGroup;
 			children = (
-				84197FD61077237000C3FDD1 /* Hq2XFilter.cpp */,
-				84197FD71077237000C3FDD1 /* Hq2XFilter.h */,
-				84197FD81077237000C3FDD1 /* nes_ntsc.c */,
-				84197FD91077237000C3FDD1 /* nes_ntsc.h */,
-				84197FDA1077237000C3FDD1 /* nes_ntsc_config.h */,
-				84197FDB1077237000C3FDD1 /* nes_ntsc_impl.h */,
 				84197FDC1077237000C3FDD1 /* NTSCFilter.cpp */,
 				84197FDD1077237000C3FDD1 /* NTSCFilter.h */,
 				84197FDE1077237000C3FDD1 /* unfiltered.cpp */,
@@ -361,16 +341,6 @@
 			);
 			name = Input;
 			path = src/Input;
-			sourceTree = SOURCE_ROOT;
-		};
-		84197FE71077237000C3FDD1 /* mac */ = {
-			isa = PBXGroup;
-			children = (
-				84197FE81077237000C3FDD1 /* SDLMain.h */,
-				84197FE91077237000C3FDD1 /* SDLMain.m */,
-			);
-			name = mac;
-			path = src/mac;
 			sourceTree = SOURCE_ROOT;
 		};
 		84197FEA1077237000C3FDD1 /* Mappers */ = {
@@ -449,6 +419,16 @@
 			path = src/Mappers;
 			sourceTree = SOURCE_ROOT;
 		};
+		DDAF373C1AE0694C00413E04 /* lib */ = {
+			isa = PBXGroup;
+			children = (
+				DDAF373D1AE0694C00413E04 /* nes_ntsc.c */,
+				DDAF373E1AE0694C00413E04 /* nfd_cocoa.m */,
+				DDAF373F1AE0694C00413E04 /* nfd_common.c */,
+			);
+			path = lib;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -459,7 +439,6 @@
 				8D1107290486CEB800E47090 /* Resources */,
 				8D11072C0486CEB800E47090 /* Sources */,
 				8D11072E0486CEB800E47090 /* Frameworks */,
-				002F39FD09D0883400EBEB88 /* Copy Frameworks into .app bundle */,
 			);
 			buildRules = (
 			);
@@ -477,11 +456,16 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastUpgradeCheck = 0630;
 				ORGANIZATIONNAME = Sublab;
 			};
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "inFami" */;
 			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
 			hasScannedForEncodings = 1;
+			knownRegions = (
+				en,
+			);
 			mainGroup = 29B97314FDCFA39411CA2CEA /* inFami */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -518,13 +502,11 @@
 				841980391077237000C3FDD1 /* ROM.cpp in Sources */,
 				8419803A1077237000C3FDD1 /* SquareAPU.cpp in Sources */,
 				8419803B1077237000C3FDD1 /* TriangleAPU.cpp in Sources */,
-				8419803C1077237000C3FDD1 /* Hq2XFilter.cpp in Sources */,
-				8419803D1077237000C3FDD1 /* nes_ntsc.c in Sources */,
 				8419803E1077237000C3FDD1 /* NTSCFilter.cpp in Sources */,
 				8419803F1077237000C3FDD1 /* unfiltered.cpp in Sources */,
+				DDAF37451AE0694C00413E04 /* nfd_common.c in Sources */,
 				841980401077237000C3FDD1 /* iNES.cpp in Sources */,
 				841980411077237000C3FDD1 /* GamePad.cpp in Sources */,
-				841980421077237000C3FDD1 /* SDLMain.m in Sources */,
 				841980431077237000C3FDD1 /* AxROM.cpp in Sources */,
 				841980441077237000C3FDD1 /* Bandai70.cpp in Sources */,
 				841980451077237000C3FDD1 /* BxNINA.cpp in Sources */,
@@ -540,8 +522,10 @@
 				8419804F1077237000C3FDD1 /* JalecoEarly1.cpp in Sources */,
 				841980501077237000C3FDD1 /* MMC1.cpp in Sources */,
 				841980511077237000C3FDD1 /* MMC2.cpp in Sources */,
+				DDAF37431AE0694C00413E04 /* nes_ntsc.c in Sources */,
 				841980521077237000C3FDD1 /* MMC3.cpp in Sources */,
 				841980531077237000C3FDD1 /* MMC4.cpp in Sources */,
+				DDAF37441AE0694C00413E04 /* nfd_cocoa.m in Sources */,
 				841980541077237000C3FDD1 /* MMC5.cpp in Sources */,
 				841980551077237000C3FDD1 /* Namco109.cpp in Sources */,
 				841980561077237000C3FDD1 /* Namcot106.cpp in Sources */,
@@ -579,7 +563,12 @@
 		C01FCF4B08A954540054247B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(LOCAL_LIBRARY_DIR)/Frameworks",
+				);
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
@@ -587,6 +576,7 @@
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
 				PRODUCT_NAME = inFami;
+				SDKROOT = macosx;
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = YES;
 			};
@@ -595,15 +585,17 @@
 		C01FCF4C08A954540054247B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = (
-					ppc,
-					i386,
+				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(LOCAL_LIBRARY_DIR)/Frameworks",
 				);
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_MODEL_TUNING = G5;
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
 				PRODUCT_NAME = inFami;
+				SDKROOT = macosx;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
@@ -622,9 +614,11 @@
 					"$(HOME)/Library/Frameworks/SDL.framework/Headers",
 					/Library/Frameworks/SDL.framework/Headers,
 					"$(HEADER_SEARCH_PATHS)",
+					include,
 				);
+				ONLY_ACTIVE_ARCH = YES;
 				PREBINDING = NO;
-				SDKROOT = macosx10.6;
+				SDKROOT = macosx;
 			};
 			name = Debug;
 		};
@@ -642,9 +636,10 @@
 					"$(HOME)/Library/Frameworks/SDL.framework/Headers",
 					/Library/Frameworks/SDL.framework/Headers,
 					"$(HEADER_SEARCH_PATHS)",
+					include,
 				);
 				PREBINDING = NO;
-				SDKROOT = macosx10.6;
+				SDKROOT = macosx;
 				VALID_ARCHS = "i386 x86_64";
 			};
 			name = Release;

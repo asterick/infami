@@ -1,6 +1,6 @@
 #define _CRT_SECURE_NO_WARNINGS
 
-#include "SDL.h"
+#include "SDL2/SDL.h"
 
 #include "Emulation.h"
 #include "../System.h"
@@ -12,7 +12,7 @@ ROM::ROM( const TimingSettings* timing ) :
 	PRGRom = 0;
 	CHRRom = 0;
 	Trainer = 0;
-	BCKRam = 0;	
+	BCKRam = 0;
 	WRKRam = 0;
 
 	BCKSize = 0;
@@ -22,7 +22,7 @@ ROM::ROM( const TimingSettings* timing ) :
 	memset( CHRRam, 0, sizeof(CHRRam) );
 }
 
-ROM::~ROM() 
+ROM::~ROM()
 {
 	if( BatteryBackup )
 	{
@@ -89,7 +89,7 @@ void ROM::SetFileName( const char *fileName )
 	GetFileName( FileName, sizeof(FileName), fileName, ".sav" );
 }
 
-Famicom *ROM::GetSystem() 
-{ 
-	return NULL; 
+Famicom *ROM::GetSystem()
+{
+	return NULL;
 }

@@ -1,4 +1,4 @@
-#include "SDL.h"
+#include "SDL2/SDL.h"
 #include "System.h"
 
 #include "Emulation/Emulation.h"
@@ -7,13 +7,245 @@
 
 #include "Filters/VideoFilter.h"
 #include "Filters/NTSCFilter.h"
-#include "Filters/Hq2XFilter.h"
 #include "Filters/Unfiltered.h"
 
 Gamepad *ControlPort1 = NULL;
 Gamepad *ControlPort2 = NULL;
-Famicom *machine = NULL;
 SystemConfig config;
+
+class InfamiContext {
+public:
+	InfamiContext() {
+		pixels = new uint32_t[SCREEN_WIDTH*SCREEN_HEIGHT];
+		filter = new Unfiltered();
+		videoModes = 0;
+		running = true;
+		machine = NULL;
+
+		SetupVideo();
+	};
+
+	~InfamiContext() {
+	    if (machine) {
+			SDL_CloseAudio();
+			delete machine;
+	    }
+
+	    delete pixels;
+	    delete filter;
+
+	    TeardownVideo();
+	}
+
+	bool Loop() {
+		SDL_Event event;
+
+		while(SDL_PollEvent(&event)) {
+			ProcessEvent(event);
+		}
+
+		if (!machine) {
+			SDL_Delay(100);
+			return running ;
+		}
+
+		// Main emulation loop
+		unsigned short *frame = NULL;
+
+		while( SDL_GetAudioStatus() == SDL_AUDIO_PLAYING && machine->AudioFull() ) {
+			SDL_Delay(5);
+		}
+
+		while( frame == NULL ) {
+			frame = machine->Execute();
+		}
+
+		filter->BlitFrame(pixels, (int)SCREEN_WIDTH * sizeof(uint32_t), frame);
+        SDL_UpdateTexture(sdlTexture, NULL, pixels, (int)SCREEN_WIDTH * sizeof(uint32_t));
+        FlipVideo();
+
+        return running;
+    };
+
+private:
+	Famicom *machine;
+
+    SDL_Window *sdlWindow;
+    SDL_Renderer *sdlRenderer;
+    SDL_Texture *sdlTexture;
+	VideoFilter *filter;
+
+	bool running;
+    int videoModes;
+
+	uint32_t* pixels;
+
+	void SetupVideo() {
+		sdlWindow = SDL_CreateWindow("inFami",
+			SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
+			640, 480,
+			videoModes);
+
+		sdlRenderer = SDL_CreateRenderer(sdlWindow, -1, 0);
+
+	    sdlTexture = SDL_CreateTexture(sdlRenderer,
+	                                   SDL_PIXELFORMAT_ARGB8888,
+	                                   SDL_TEXTUREACCESS_STREAMING,
+	                                   640, 480);
+
+	    SDL_SetRenderDrawColor(sdlRenderer, 0, 0, 0, 255);
+	};
+
+	void TeardownVideo() {
+	    SDL_DestroyTexture(sdlTexture);
+	    SDL_DestroyRenderer(sdlRenderer);
+	    SDL_DestroyWindow(sdlWindow);
+	}
+
+	void FlipVideo() {
+        SDL_RenderClear(sdlRenderer);
+        SDL_RenderCopy(sdlRenderer, sdlTexture, NULL, NULL);
+        SDL_RenderPresent(sdlRenderer);
+	};
+
+	void ProcessEvent(SDL_Event& event) {
+		switch(event.type) {
+			case SDL_QUIT:
+				running = false;
+				break ;
+			case SDL_KEYDOWN:  /* Handle a KEYDOWN event */
+				if( event.key.keysym.mod & (KMOD_CTRL | KMOD_SHIFT | KMOD_GUI) ) {
+					switch( event.key.keysym.sym ) {
+					case SDLK_f:
+						videoModes ^= SDL_WINDOW_FULLSCREEN;
+	                    SDL_SetWindowFullscreen(sdlWindow, videoModes);
+						SDL_ShowCursor( (videoModes & SDL_WINDOW_FULLSCREEN) ? SDL_DISABLE : SDL_ENABLE );
+
+						break ;
+					case SDLK_q:
+						running = false;
+						break ;
+					case SDLK_o:
+						SDL_PauseAudio(true);
+						LoadCartridge();
+
+						break ;
+					case SDLK_r:
+						if( machine )
+							machine->Restart();
+						break ;
+					// THESE ARE MAPPER SHIFTED CODES
+					default:
+						if( machine )
+							machine->SpecialKey( event.key.keysym.sym );
+						break ;
+					}
+				}
+			case SDL_KEYUP:
+				if( event.key.keysym.mod & (KMOD_CTRL | KMOD_SHIFT | KMOD_GUI) )
+					break ;
+
+				if( ControlPort1 != NULL )
+					ControlPort1->HandleEvent( event.key.state == SDL_PRESSED, event.key.keysym.sym );
+				if( ControlPort2 != NULL )
+					ControlPort2->HandleEvent( event.key.state == SDL_PRESSED, event.key.keysym.sym );
+
+				break ;
+			case SDL_JOYAXISMOTION:
+				{
+					int buttonID = 0x81000000 |
+						(event.jhat.which) |
+						(event.jhat.hat << 8) |
+						((event.jhat.value > 0) ? 0x01 : 0x02);
+					bool pressed = (abs(event.jaxis.value) > 0xFF);
+
+					if( ControlPort1 != NULL )
+						ControlPort1->HandleEvent( pressed, buttonID );
+					if( ControlPort2 != NULL )
+						ControlPort2->HandleEvent( pressed, buttonID );
+				}
+				break;
+
+			case SDL_JOYHATMOTION:
+				{
+					int buttonID = 0x82000000 |
+						(event.jhat.which) |
+						(event.jhat.hat << 8) |
+						((event.jhat.value > 0) ? 0x01 : 0x02);
+
+	                bool pressed = !(event.jhat.value & SDL_HAT_CENTERED);
+
+					if( ControlPort1 != NULL )
+						ControlPort1->HandleEvent( pressed, buttonID );
+					if( ControlPort2 != NULL )
+						ControlPort2->HandleEvent( pressed, buttonID );
+				}
+				break ;
+
+			case SDL_JOYBUTTONDOWN:
+			case SDL_JOYBUTTONUP:
+				{
+					int buttonID = 0x83000000 |
+						(event.jbutton.which) |
+						(event.jbutton.button << 8);
+					bool pressed = (event.jbutton.state == SDL_PRESSED);
+
+					if( ControlPort1 != NULL )
+						ControlPort1->HandleEvent( pressed, buttonID );
+					if( ControlPort2 != NULL )
+						ControlPort2->HandleEvent( pressed, buttonID );
+				}
+				break ;
+
+			/*
+			case SDL_MOUSEMOTION:
+				{
+					unsigned char *pixels = (unsigned char*) screen->pixels;
+
+					pixels += screen->pitch * event.motion.y;
+					pixels += screen->format->BytesPerPixel * event.motion.x;
+
+					int lum = (*(pixels++) + *(pixels++) + *(pixels++)) / 3;
+
+					g->LightSense( event.motion.state != 0, lum > 64 );
+
+					printf("%i\n",lum);
+				}
+				break ;
+			*/
+		}
+	};
+
+	void LoadCartridge() {
+	    const char *szFile = GetRomFilename();
+
+	    if (!szFile) {
+	        return ;
+	    }
+
+	    if (machine) {
+			SDL_CloseAudio();
+			delete machine;
+	    }
+
+	    Famicom *loaded = LoadINes( szFile );
+
+		if( loaded )
+		{
+			// Reset the NES (grrrr)
+			loaded->Restart();
+
+			//ConfigureAudio(config.SampleRate, loaded);
+			if( ControlPort1 )
+				loaded->InsertController( false, ControlPort1 );
+			if( ControlPort2 )
+				loaded->InsertController( true, ControlPort2 );
+
+			machine = loaded;
+			SDL_PauseAudio( false );
+		}
+	};
+};
 
 void ShowFPS()
 {
@@ -23,7 +255,7 @@ void ShowFPS()
 
 	ff++;
 
-	if((thisframe-lastframe) > 1000) 
+	if((thisframe-lastframe) > 1000)
 	{
 		printf("FPS: %d\n",ff);
 		ff=0;
@@ -65,38 +297,10 @@ void ConfigureAudio( int rate, Famicom *sys )
 	sys->ConfigureAudio( obtained.freq, obtained.samples );
 }
 
-void loadFamicom( char *szFile )
-{
-	Famicom *loaded;
-	loaded = LoadINes( szFile );
-	
-	if( loaded )
-	{
-		// Reset the NES (grrrr)
-		loaded->Restart();
-		
-		if( machine != NULL )
-		{
-			SDL_CloseAudio();
-			delete machine;
-		}
-		
-		ConfigureAudio(config.SampleRate, loaded);
-		
-		if( ControlPort1 )
-			loaded->InsertController( false, ControlPort1 );
-		if( ControlPort2 )
-			loaded->InsertController( true, ControlPort2 );
-		machine = loaded;
-	}
-}
-
 int main( int argc, char** argv )
 {
-	SDL_Surface *screen = NULL;
-		
 	LoadConfiguration( argv[0], config );
-	
+
 	/* initialize SDL */
 	if ( SDL_Init( SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER | SDL_INIT_JOYSTICK ) < 0 )
 	{
@@ -113,188 +317,31 @@ int main( int argc, char** argv )
 		return -1;
 	}
 
-	int videoModes = SDL_SWSURFACE;
-
-	screen = SDL_SetVideoMode( 640, 480, 32, videoModes );
-	SDL_WM_SetCaption( "inFami", NULL );
-
-	for( int i = 0; i < SDL_NumJoysticks(); i++ )
+    for( int i = 0; i < SDL_NumJoysticks(); i++ )
 		SDL_JoystickOpen(i);
 
 	LoadDatabase(GetDatabaseName());
 
-	VideoFilter *filter = new NTSCFilter();
-	ControlPort1 = new Gamepad( &config.Gamepad1 );
-	ControlPort2 = new Gamepad( &config.Gamepad2 );
+	InfamiContext ctx;
 
-	if( argc > 1 )
-		loadFamicom( argv[1] );
+	ControlPort1 = new Gamepad(&config.Gamepad1);
+	ControlPort2 = new Gamepad(&config.Gamepad2);
 
 	// --- CORE EMULATION / PROGRAM LOOP ---
-		
-	bool running = true;
 
-	do
-	{
-		SDL_Event event;
-
-		while(SDL_PollEvent(&event)) 
-		{
-			switch(event.type) 
-			{
-				case SDL_QUIT:
-					running = false;
-					break ;
-				case SDL_KEYDOWN:  /* Handle a KEYDOWN event */
-					// Meta is used so mac keys make sense
-					if( event.key.keysym.mod & (KMOD_CTRL | KMOD_SHIFT | KMOD_META) )	
-					{
-						switch( event.key.keysym.sym )
-						{
-						case SDLK_f:
-							videoModes ^= SDL_FULLSCREEN;
-							screen = SDL_SetVideoMode( 640, 480, 32, videoModes );
-							SDL_WM_SetCaption( "inFami", NULL );
-							SDL_ShowCursor( (videoModes & SDL_FULLSCREEN) ? SDL_DISABLE : SDL_ENABLE );
-
-							break ;
-						case SDLK_q:
-							running = false;
-							break ;					
-						case SDLK_o:
-							SDL_PauseAudio(true);
-							
-							char szFile[1024];			
-
-							if ( GetRomFilename( szFile, sizeof(szFile) ) )
-								loadFamicom( szFile );
-
-							SDL_PauseAudio( false );
-
-							break ;
-						case SDLK_r:
-							if( machine )
-								machine->Restart();
-							break ;
-						// THESE ARE MAPPER SHIFTED CODES
-						default:
-							if( machine )
-								machine->SpecialKey( event.key.keysym.sym );
-							break ;
-						}
-					}
-				case SDL_KEYUP:
-					if( event.key.keysym.mod & (KMOD_CTRL | KMOD_SHIFT | KMOD_META) )
-						break ;
-
-					if( ControlPort1 != NULL )
-						ControlPort1->HandleEvent( event.key.state == SDL_PRESSED, event.key.keysym.sym );
-					if( ControlPort2 != NULL )
-						ControlPort2->HandleEvent( event.key.state == SDL_PRESSED, event.key.keysym.sym );
-
-					break ;
-				case SDL_JOYAXISMOTION:
-					{
-						int buttonID = 0x81000000 | 
-							(event.jhat.which) | 
-							(event.jhat.hat << 8) | 
-							((event.jhat.value > 0) ? 0x01 : 0x02);
-						bool pressed = (abs(event.jaxis.value) > 0xFF);
-
-						if( ControlPort1 != NULL )
-							ControlPort1->HandleEvent( pressed, buttonID );
-						if( ControlPort2 != NULL )
-							ControlPort2->HandleEvent( pressed, buttonID );
-					}
-					break;
-
-				case SDL_JOYHATMOTION:
-					{
-						int buttonID = 0x82000000 | 
-							(event.jhat.which) | 
-							(event.jhat.hat << 8) | 
-							((event.jhat.value > 0) ? 0x01 : 0x02);
-
-						bool pressed = (abs(event.jhat.value) > 0x40);
-
-						if( ControlPort1 != NULL )
-							ControlPort1->HandleEvent( pressed, buttonID );
-						if( ControlPort2 != NULL )
-							ControlPort2->HandleEvent( pressed, buttonID );
-					}
-					break ;
-	
-				case SDL_JOYBUTTONDOWN:
-				case SDL_JOYBUTTONUP:
-					{
-						int buttonID = 0x83000000 |
-							(event.jbutton.which) | 
-							(event.jbutton.button << 8);
-						bool pressed = (event.jbutton.state == SDL_PRESSED);
-
-						if( ControlPort1 != NULL )
-							ControlPort1->HandleEvent( pressed, buttonID );
-						if( ControlPort2 != NULL )
-							ControlPort2->HandleEvent( pressed, buttonID );
-					}
-					break ;
-
-				/*
-				case SDL_MOUSEMOTION:
-					{
-						unsigned char *pixels = (unsigned char*) screen->pixels;
-
-						pixels += screen->pitch * event.motion.y;
-						pixels += screen->format->BytesPerPixel * event.motion.x;
-
-						int lum = (*(pixels++) + *(pixels++) + *(pixels++)) / 3;
-
-						g->LightSense( event.motion.state != 0, lum > 64 );
-
-						printf("%i\n",lum);
-					}
-					break ;
-				*/
-			}
-		}
-	
-		// Main emulation loop
-		if( machine != NULL )
-		{
-			unsigned short *frame = NULL;
-			
-			while( SDL_GetAudioStatus() == SDL_AUDIO_PLAYING &&
-				  machine->AudioFull() ) 
-				SDL_Delay(5);
-			while( frame == NULL )
-				frame = machine->Execute();
-
-			filter->BlitFrame( screen, frame, PPU_PITCH );
-		}
-		else
-		{
-			SDL_Delay(100);
-		}
-	
-		SDL_Flip( screen );
+	while( ctx.Loop() ) {
 		ShowFPS();
 	}
-	while( running );
 
-	SDL_Quit( );
 	SaveConfiguration( argv[0], config );
-
 	CloseDatabase();
 
-	if( machine != NULL )
-		delete machine;
-	
-	delete filter;
-	
 	if( ControlPort1 != NULL )
 		delete ControlPort1;
 	if( ControlPort2 != NULL )
 		delete ControlPort2;
+
+	SDL_Quit();
 
 	return 0;
 }

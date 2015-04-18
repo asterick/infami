@@ -1,9 +1,9 @@
 #ifndef __PPU_H
 #define __PPU_H
 
-#define PPU_PITCH	(256)		// 32 on screen tiles, 2 extra tiles + scroll shift
-#define PPU_HEIGHT	(240)		// 240 vertical display lines
-#define PPU_FRAME	(256*241)	// Total frame size
+#define PPU_WIDTH	(256)			// 32 on screen tiles, 2 extra tiles + scroll shift
+#define PPU_HEIGHT	(240)			// 240 vertical display lines
+#define PPU_FRAME	(PPU_WIDTH*241)	// Total frame size
 
 #define VBLANK_VALUE		0x80
 #define SPRITE0_VALUE		0x40
@@ -17,12 +17,12 @@ enum
 	LOAD_X,
 
 	PRIMARY_OVERFLOW,
-			
+
 	MOCK_COPY1,
 	MOCK_COPY2,
 	MOCK_COPY3,
 	COMPARY_Y_BUGGED
-};		
+};
 
 class PPU
 {
@@ -31,14 +31,14 @@ public:
 
 protected:
 	unsigned short* VideoClock();
-	
+
 	void PPUWrite( unsigned short Address, unsigned char Byte );
 	unsigned char PPURead( unsigned short Address, unsigned char Trash );
 	bool RequestNMI();
 
 	/* EXPECTED OVERRIDES */
 	virtual void VideoAddressLatch( unsigned short Address ) {}
-	virtual void VideoWrite( unsigned char Byte ) {}	
+	virtual void VideoWrite( unsigned char Byte ) {}
 	virtual unsigned char VideoRead() { return 0; }
 
 	unsigned char	GetNameTable( unsigned short Address );
@@ -49,7 +49,7 @@ protected:
 	void			SetMirrorHorizontal();
 	void			SetMirrorFourScreen();
 	void			SetMirrorZero();
-	void			SetMirrorOne();	
+	void			SetMirrorOne();
 
 private:
 	void WriteHorizontal( unsigned char Byte );
@@ -57,21 +57,21 @@ private:
 	void WriteNameTable( unsigned char Byte );
 	void WritePaletteRam( unsigned short Address, unsigned char Byte );
 	unsigned char ReadPaletteRam( unsigned short Address );
-	
+
 	unsigned short IncrementHorizontal( unsigned short addr );
 	unsigned short IncrementVertical( unsigned short addr );
 	void ClockPlayfield( int hpos, int vpos );
 	void ClockOAM( int hpos, int vpos );
 	void RenderOAM();
-	
-	unsigned short	m_Frame[ PPU_PITCH * 241 ];
+
+	unsigned short	m_Frame[ PPU_WIDTH * 241 ];
 	unsigned char	m_Palette[32];
 	unsigned char	m_PaletteConvertBus[0x20];
 	unsigned short* m_Pixel;
 
 	/* Serializer buffer */
 	unsigned char	m_PriorityEncoder[0x400];
-	unsigned char	m_PFSerializer[256+16];	
+	unsigned char	m_PFSerializer[256+16];
 	unsigned char	m_OBJSerializer[256+16];
 	unsigned short	m_PatternAddress;
 
@@ -79,7 +79,7 @@ private:
 	int				m_HPos;
 	int				m_VPos;
 	bool			m_FrameToggle;
-	int				m_VerticalBlankPeriod;	
+	int				m_VerticalBlankPeriod;
 	bool			m_HiLoToggle;
 
 	/* Display scroll effective registers */
