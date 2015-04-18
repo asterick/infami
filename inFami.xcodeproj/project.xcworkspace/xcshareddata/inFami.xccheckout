@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>362F055E-37B5-4948-A1AE-A05B9B8BBE4E</string>
+	<key>IDESourceControlProjectName</key>
+	<string>inFami</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>2F00172D6D9B4F8F31CA18E6CB53AAE11544ED28</key>
+		<string>https://github.com/asterick/infami.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>inFami.xcodeproj</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>2F00172D6D9B4F8F31CA18E6CB53AAE11544ED28</key>
+		<string>../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/asterick/infami.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>2F00172D6D9B4F8F31CA18E6CB53AAE11544ED28</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>2F00172D6D9B4F8F31CA18E6CB53AAE11544ED28</string>
+			<key>IDESourceControlWCCName</key>
+			<string>infami</string>
+		</dict>
+	</array>
+</dict>
+</plist>
